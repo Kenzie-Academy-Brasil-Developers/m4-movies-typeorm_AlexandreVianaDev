@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { movieCreateSchema } from "../schemas/movies.schemas";
 import { validateBody } from "../middlewares/validateBody.middleware";
-import { createMovieController } from "../controllers/createMovie.controllers";
-import { listMoviesController } from "../controllers/listMovies.controllers";
+import {
+  createMovieController,
+  listMoviesController,
+} from "../controllers/movies.controllers";
 
 export const moviesRoutes: Router = Router();
 
