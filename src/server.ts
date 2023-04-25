@@ -1,11 +1,12 @@
 import { AppDataSource } from "./data-source";
 import app from "./app";
 
+export const PORT = process.env.PORT || 3000;
+
 AppDataSource.initialize()
   .then(async () => {
     console.log("Database connected.");
 
-    const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       console.log(`App is running on https://localhost:${PORT}`);
     });
