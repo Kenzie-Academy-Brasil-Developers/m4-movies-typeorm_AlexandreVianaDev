@@ -1,15 +1,12 @@
 import { z } from "zod";
-import {
-  movieCreateSchema,
-  movieSchema,
-  movieUpdateSchema,
-} from "../schemas/movies.schemas";
+import { movieCreateSchema, movieSchema } from "../schemas/movies.schemas";
+import { DeepPartial } from "typeorm";
 
 export type TMovie = z.infer<typeof movieSchema>;
 
 export type TMovieCreate = z.infer<typeof movieCreateSchema>;
 
-export type TMovieUpdate = z.infer<typeof movieUpdateSchema>;
+export type TMovieUpdate = DeepPartial<TMovieCreate>;
 
 export type TMovieListResponse = {
   prevPage: string | null;

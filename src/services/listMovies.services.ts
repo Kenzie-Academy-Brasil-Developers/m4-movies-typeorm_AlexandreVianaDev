@@ -3,18 +3,20 @@ import { AppDataSource } from "../data-source";
 import { Movie } from "../entities";
 import { TMovieListResponse } from "../interfaces/movies.interfaces";
 import "dotenv/config";
-import { PORT } from "../server";
 
 export const listMoviesService = async (
-  pageQuery: any,
-  perPageQuery: any,
-  sortQuery: any,
-  orderQuery: any,
-  url: string
+  pageQuery: number,
+  perPageQuery: number,
+  sortQuery: string,
+  orderQuery: string
 ): Promise<TMovieListResponse> => {
   const moviesRepo: Repository<Movie> = AppDataSource.getRepository(Movie);
 
-  // console.log(pageQuery, perPageQuery, sortQuery, orderQuery);
+  const PORT = process.env.PORT || 3000;
+
+  let movies: Movie[] = [];
+
+  const allMovies: Movie[] = await moviesRepo.find();
 
   if (perPageQuery < 0 || perPageQuery > 5) {
     perPageQuery = 5;
@@ -24,50 +26,51 @@ export const listMoviesService = async (
     pageQuery = 1;
   }
 
-  let movies: Movie[] = [];
-
-  const allMovies: Movie[] = await moviesRepo.find();
-
-  if (sortQuery === "id") {
-    movies = await moviesRepo.find({
-      order: { id: orderQuery },
-      skip: (pageQuery - 1) * perPageQuery,
-      take: perPageQuery,
-    });
-  }
-
-  if (sortQuery === "price") {
-    movies = await moviesRepo.find({
-      order: { price: orderQuery },
-      skip: (pageQuery - 1) * perPageQuery,
-      take: perPageQuery,
-    });
-  }
-
-  if (sortQuery === "duration") {
-    movies = await moviesRepo.find({
-      order: { duration: orderQuery },
-      skip: (pageQuery - 1) * perPageQuery,
-      take: perPageQuery,
-    });
-  }
-
   let urlPrevPage = null;
   let urlNextPage = null;
 
-  // console.log("PAGINATION", pageQuery, perPageQuery);
-  // console.log("cALCULO", movies.length / perPageQuery);
-
   if (pageQuery !== 1) {
-    urlPrevPage = `https://localhost:${PORT}/movies/?page=${
+    urlPrevPage = `http://localhost:${PORT}/movies?page=${
       pageQuery - 1
-    }&perPage=${perPageQuery}&sort=${sortQuery}&order=${orderQuery}`;
+    }&perPage=${perPageQuery}`;
   }
 
   if (allMovies.length / perPageQuery > pageQuery) {
-    urlNextPage = `https://localhost:${PORT}/movies/?page=${
+    urlNextPage = `http://localhost:${PORT}/movies?page=${
       pageQuery + 1
-    }&perPage=${perPageQuery}&sort=${sortQuery}&order=${orderQuery}`;
+    }&perPage=${perPageQuery}`;
+  }
+
+  let orderObj = {};
+
+  if (sortQuery === "id") {
+    orderObj = {
+      id: orderQuery,
+    };
+  }
+
+  if (sortQuery === "price") {
+    orderObj = {
+      price: orderQuery,
+    };
+  }
+
+  if (sortQuery === "duration") {
+    orderObj = {
+      duration: orderQuery,
+    };
+  }
+
+  if (pageQuery || perPageQuery) {
+    movies = await moviesRepo.find({
+      skip: (pageQuery - 1) * perPageQuery,
+      take: perPageQuery,
+      order: orderObj,
+    });
+  }
+
+  if (!pageQuery || !perPageQuery) {
+    movies = allMovies;
   }
 
   const response = {
