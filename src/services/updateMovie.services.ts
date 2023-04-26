@@ -1,31 +1,26 @@
 import { AppDataSource } from "../data-source";
 import { Movie } from "../entities";
 import { Repository } from "typeorm";
-import { TMovie, TMovieUpdate } from "../interfaces/movies.interfaces";
-import { AppError } from "../error";
+import { TMovieUpdate } from "../interfaces/movies.interfaces";
 
 export const updateMovieService = async (
-  payload: TMovie,
+  payload: TMovieUpdate,
   idParams: number
-): Promise<TMovie> => {
+): Promise<Movie> => {
   const movieRepo: Repository<Movie> = AppDataSource.getRepository(Movie);
 
-  const movieFind: TMovie | null = await movieRepo.findOne({
+  const movieFind: Movie | null = await movieRepo.findOne({
     where: {
       id: idParams,
     },
   });
 
-  const movieUpdated: TMovie = {
+  const movieUpdated: Movie = movieRepo.create({
     ...movieFind!,
     ...payload,
-  };
-  await movieRepo.save(movieUpdated);
+  });
 
-  //   await movieRepo.save({
-  //     id: idParams,
-  //     ...payload,
-  //   });
+  await movieRepo.save(movieUpdated);
 
   return movieUpdated;
 };
