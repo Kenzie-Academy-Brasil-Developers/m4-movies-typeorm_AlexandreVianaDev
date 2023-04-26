@@ -1,4 +1,5 @@
 import express, { Application } from "express";
+import "express-async-errors";
 import { moviesRoutes } from "./routers/movies.routes";
 import { errorHandler } from "./middlewares/errorHandle.middleware";
 
