@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import { createMovieService } from "../services/createMovie.services";
 import { Movie } from "../entities";
 import { listMoviesService } from "../services/listMovies.services";
-import { TMovieListResponse } from "../interfaces/movies.interfaces";
+import { TMovie, TMovieListResponse } from "../interfaces/movies.interfaces";
+import { updateMovieService } from "../services/updateMovie.services";
+import { deleteMovieService } from "../services/deleteMovie.services";
 
 export const createMovieController = async (
   req: Request,
@@ -33,4 +35,22 @@ export const listMoviesController = async (
   );
 
   return res.status(200).json(movies);
+};
+
+export const updateMovieController = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const id: number = res.locals.id
+  const movie: TMovie = await updateMovieService(req.body, id);
+  return res.status(200).json(movie);
+};
+
+export const deleteMovieController = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const id: number = res.locals.id
+  await deleteMovieService(id);
+  return res.status(204).send();
 };
