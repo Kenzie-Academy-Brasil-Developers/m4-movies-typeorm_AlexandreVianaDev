@@ -20,8 +20,7 @@ export const ensureMovieIdExists = async (
   });
 
   if (!movies) {
-    console.log(movies);
-    throw new AppError("Movie not found.", 404);
+    throw new AppError("Movie not found", 404);
   }
 
   res.locals.id = idParams;

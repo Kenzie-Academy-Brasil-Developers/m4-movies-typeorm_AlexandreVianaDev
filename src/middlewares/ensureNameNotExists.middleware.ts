@@ -13,14 +13,13 @@ export const ensureNameNotExists = async (
 
   const moviesRepo: Repository<Movie> = AppDataSource.getRepository(Movie);
 
-  const movies: Movie | null = await moviesRepo.findOne({
+  const movie: Movie | null = await moviesRepo.findOne({
     where: {
       name: nameBody,
     },
   });
 
-  if (movies) {
-    console.log(movies)
+  if (movie && nameBody) {
     throw new AppError("Movie already exists.", 409);
   }
 

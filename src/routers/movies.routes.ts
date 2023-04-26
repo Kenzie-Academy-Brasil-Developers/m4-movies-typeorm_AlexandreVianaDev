@@ -25,8 +25,8 @@ moviesRoutes.get("", listMoviesController);
 moviesRoutes.patch(
   "/:id",
   validateBody(movieUpdateSchema),
-  ensureNameNotExists,
   ensureMovieIdExists,
+  ensureNameNotExists,
   updateMovieController
 );
 moviesRoutes.delete("/:id", ensureMovieIdExists, deleteMovieController);

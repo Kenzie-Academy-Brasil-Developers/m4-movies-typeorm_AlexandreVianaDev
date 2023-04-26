@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const movieSchema = z.object({
-  id: z.number().int(),
+  id: z.number().int().positive(),
   name: z.string().max(50),
-  description: z.string().optional().nullable(),
-  duration: z.number().int(),
-  price: z.number().int(),
+  description: z.string().nullish(),
+  duration: z.number().int().positive(),
+  price: z.number().int().positive(),
 });
 
 export const movieCreateSchema = movieSchema.omit({
